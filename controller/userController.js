@@ -123,4 +123,70 @@ const getUserByIdController = (req, res) => {
   return 0;
 };
 
-module.exports = { createUserController, getAllUsersController, getUserByIdController };
+const updateUserByIdController = (req, res) => {
+  const { userId } = req.params;
+  const {
+    firstName,
+    lastName,
+    email,
+    phoneNumber,
+  } = req.body;
+  const updatedAt = new Date().toISOString().slice(0, 19).replace('T', ' ');
+
+  let response;
+
+  if (!firstName) {
+    response = res.status(400).json(
+      responseHelper('fail', 'mohon isi nama depan', []),
+    );
+
+    return response;
+  }
+
+  if (!lastName) {
+    response = res.status(400).json(
+      responseHelper('fail', 'mohon isi nama belakang', []),
+    );
+
+    return response;
+  }
+
+  if (!email) {
+    response = res.status(400).json(
+      responseHelper('fail', 'mohon isi email', []),
+    );
+
+    return response;
+  }
+
+  const sql = `UPDATE users 
+  SET
+  firstName = '${firstName}',
+  lastName = '${lastName}',
+  email = '${email}',
+  phoneNumber = '${phoneNumber}',
+  updatedAt = '${updatedAt}'
+  WHERE
+  id = '${userId}'`;
+
+  db.query(sql, (error, result) => {
+    if (error) {
+      throw error;
+    }
+
+    response = res.status(200).json(
+      responseHelper('succes', 'berhasil melakukan update', result),
+    );
+
+    return response;
+  });
+
+  return 0;
+};
+
+module.exports = {
+  createUserController,
+  getAllUsersController,
+  getUserByIdController,
+  updateUserByIdController,
+};
