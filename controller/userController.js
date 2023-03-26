@@ -80,8 +80,22 @@ const getAllUsersController = (req, res) => {
       throw error;
     }
 
+    if (result.length <= 0) {
+      const response = res.status(200).json(
+        responseHelper('success', 'belum ada data user', []),
+      );
+
+      return response;
+    }
+
+    const filteredResult = result.map((r) => ({
+      id: r.id,
+      firstName: r.firstName,
+      lastName: r.lastName,
+    }));
+
     const response = res.status(200).json(
-      responseHelper('success', 'menampilkan semua data user', result),
+      responseHelper('success', 'menampilkan semua data user', filteredResult),
     );
 
     return response;
@@ -90,4 +104,23 @@ const getAllUsersController = (req, res) => {
   return 0;
 };
 
-module.exports = { createUserController, getAllUsersController };
+const getUserByIdController = (req, res) => {
+  const { userId } = req.params;
+  const sql = `SELECT * FROM users WHERE id = '${userId}'`;
+
+  db.query(sql, (error, result) => {
+    if (error) {
+      throw error;
+    }
+
+    const response = res.status(200).json(
+      responseHelper('success', 'menampilkan data user', result),
+    );
+
+    return response;
+  });
+
+  return 0;
+};
+
+module.exports = { createUserController, getAllUsersController, getUserByIdController };
