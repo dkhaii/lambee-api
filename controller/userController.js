@@ -175,7 +175,27 @@ const updateUserByIdController = (req, res) => {
     }
 
     response = res.status(200).json(
-      responseHelper('succes', 'berhasil melakukan update', result),
+      responseHelper('success', 'berhasil melakukan update', result),
+    );
+
+    return response;
+  });
+
+  return 0;
+};
+
+const deleteUserByIdController = (req, res) => {
+  const { userId } = req.params;
+
+  const sql = `DELETE FROM users WHERE id = '${userId}'`;
+
+  db.query(sql, (error, result) => {
+    if (error) {
+      throw error;
+    }
+
+    const response = res.status(200).json(
+      responseHelper('success', 'berhasil menghapus user', result),
     );
 
     return response;
@@ -189,4 +209,5 @@ module.exports = {
   getAllUsersController,
   getUserByIdController,
   updateUserByIdController,
+  deleteUserByIdController,
 };
