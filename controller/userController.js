@@ -73,6 +73,8 @@ const createUserController = (req, res) => {
 };
 
 const getAllUsersController = (req, res) => {
+  const { firstName, lastName } = req.query;
+
   const sql = 'SELECT * FROM users';
 
   db.query(sql, (error, result) => {
@@ -88,14 +90,28 @@ const getAllUsersController = (req, res) => {
       return response;
     }
 
-    const filteredResult = result.map((r) => ({
+    let filteredResult = result;
+
+    if (typeof firstName !== 'undefined') {
+      filteredResult = result.filter(
+        (r) => r.firstName.toLowerCase().includes(firstName.toLowerCase()),
+      );
+    }
+
+    if (typeof lastName !== 'undefined') {
+      filteredResult = result.filter(
+        (r) => r.lastName.toLowerCase().includes(lastName.toLowerCase()),
+      );
+    }
+
+    const mappedResult = filteredResult.map((r) => ({
       id: r.id,
       firstName: r.firstName,
       lastName: r.lastName,
     }));
 
     const response = res.status(200).json(
-      responseHelper('success', 'menampilkan semua data user', filteredResult),
+      responseHelper('success', 'menampilkan semua data user', mappedResult),
     );
 
     return response;
