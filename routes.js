@@ -1,11 +1,11 @@
 const express = require('express');
 const {
-  createUserController,
   getAllUsersController,
   getUserByIdController,
   updateUserByIdController,
   deleteUserByIdController,
-} = require('./controller/userController');
+} = require('./controller/adminController');
+const { createUserController } = require('./controller/userController');
 
 const router = express.Router();
 
@@ -13,10 +13,13 @@ router.get('/', (req, res) => {
   res.send('ini halaman homepage');
 });
 
+// user routes
 router.post('/users', createUserController);
-router.get('/users', getAllUsersController);
-router.get('/users/:userId', getUserByIdController);
-router.put('/users/:userId', updateUserByIdController);
-router.delete('/users/:userId', deleteUserByIdController);
+
+// admin routes
+router.get('/admins', getAllUsersController);
+router.get('/admins/:userID', getUserByIdController);
+router.put('/admins/:userID', updateUserByIdController);
+router.delete('/admins/:userID', deleteUserByIdController);
 
 module.exports = router;
